@@ -1,6 +1,6 @@
 const TG_BOT_TOKEN = process.env.TG_BOT_TOKEN,
   TG_CHAT_ID = process.env.TG_CHAT_ID,
-  GITHUB_TOKEN = process.env.GITHUB_TOKEN,
+  GITHUB_RUNNER_TOKEN = process.env.GITHUB_RUNNER_TOKEN,
   GITHUB_REPO = process.env.GITHUB_REPO,
   GITHUB_RUN_ID = process.env.GITHUB_RUN_ID,
   GITHUB_FETCH_OPTIONS = {

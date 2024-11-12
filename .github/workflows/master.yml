@@ -14,7 +14,7 @@ on:
         required: true
       TG_CHAT_ID:
         required: true
-      GITHUB_TOKEN:
+      GITHUB_RUNNER_TOKEN:
         required: true
 
 jobs:
@@ -35,5 +35,5 @@ jobs:
           GITHUB_RUN_ID="${{ inputs.GITHUB_RUN_ID }}" \
           TG_BOT_TOKEN="${{ secrets.TG_BOT_TOKEN }}" \
           TG_CHAT_ID="${{ secrets.TG_CHAT_ID }}" \
-          GITHUB_TOKEN="${{ secrets.GITHUB_TOKEN }}" \
+          GITHUB_RUNNER_TOKEN="${{ secrets.GITHUB_RUNNER_TOKEN }}" \
           node main.js
