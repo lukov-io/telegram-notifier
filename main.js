@@ -6,7 +6,7 @@ const TG_BOT_TOKEN = process.env.TG_BOT_TOKEN,
   GITHUB_FETCH_OPTIONS = {
     headers: {
       'Accept': 'vnd.github+json',
-      'Authorization': `Bearer ${GITHUB_TOKEN}`
+      'Authorization': `Bearer ${GITHUB_RUNNER_TOKEN}`
     }
   };
 let jobs_urls = '',
