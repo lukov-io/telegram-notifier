@@ -14,7 +14,6 @@ inputs:
     default: "1"
   TG_TOPIC_ID:
     description: 'the topic of the chat ID that will receive the message'
-    default: ""
   GITHUB_RUNNER_TOKEN:
     description: >
       Personal access token (PAT) used to fetch the repository. The PAT is configured
