@@ -4,6 +4,7 @@ const TG_BOT_TOKEN = process.env.INPUT_TG_BOT_TOKEN,
   GITHUB_RUNNER_TOKEN = process.env.INPUT_GITHUB_RUNNER_TOKEN,
   GITHUB_REPO = process.env.INPUT_GITHUB_REPO,
   GITHUB_RUN_ID = process.env.INPUT_GITHUB_RUN_ID,
+  GITHUB_REF_NAME = process.env.GITHUB_REF_NAME,
   NEEDS = process.env.INPUT_NEEDS,
   GITHUB_FETCH_OPTIONS = {
     headers: {
@@ -53,7 +54,7 @@ let jobs_urls = '',
       });
     }
 
-    msg_text = `Деплой завершен со статусом <a href="${json_run.html_url}">${conclusion}</a>, пользователем <a href="${json_run.actor.html_url}">${json_run.actor.login}</a>, попыток: ${json_run.run_attempt}\n\nПодзадачи:\n${jobs_urls}`;
+    msg_text = `Деплой на ветке ${GITHUB_REF_NAME} завершен со статусом <a href="${json_run.html_url}">${conclusion}</a>, пользователем <a href="${json_run.actor.html_url}">${json_run.actor.login}</a>, попыток: ${json_run.run_attempt}\n\nПодзадачи:\n${jobs_urls}`;
   } else {
     msg_text = `Ошибка при сборе данных, для <a href="https://github.com/${GITHUB_REPO}/actions/runs/${GITHUB_RUN_ID}">деплоя</a>`;
   }
