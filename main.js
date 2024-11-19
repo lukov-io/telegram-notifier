@@ -1,9 +1,10 @@
 const TG_BOT_TOKEN = process.env.INPUT_TG_BOT_TOKEN,
   TG_CHAT_ID = process.env.INPUT_TG_CHAT_ID,
   TG_TOPIC_ID = process.env.INPUT_TG_TOPIC_ID,
+  TG_MSG = process.env.INPUT_TG_MSG,
   GITHUB_RUNNER_TOKEN = process.env.INPUT_GITHUB_RUNNER_TOKEN,
-  GITHUB_REPO = process.env.INPUT_GITHUB_REPO,
-  GITHUB_RUN_ID = process.env.INPUT_GITHUB_RUN_ID,
+  GITHUB_REPO = process.env.INPUT_GITHUB_REPO || process.env.GITHUB_REPOSITORY,
+  GITHUB_RUN_ID = process.env.INPUT_GITHUB_RUN_ID || process.env.GITHUB_RUN_ID,
   GITHUB_REF_NAME = process.env.GITHUB_REF_NAME,
   NEEDS = process.env.INPUT_NEEDS,
   GITHUB_FETCH_OPTIONS = {
@@ -21,42 +22,10 @@ let jobs_urls = '',
   conclusion;
 
 (async () => {
-  json_run = await getData(
-    `https://api.github.com/repos/${GITHUB_REPO}/actions/runs/${GITHUB_RUN_ID}`,
-    GITHUB_FETCH_OPTIONS);
-  json_jobs = await getData(
-    `https://api.github.com/repos/${GITHUB_REPO}/actions/runs/${GITHUB_RUN_ID}/jobs`,
-    GITHUB_FETCH_OPTIONS);
-
-  if (json_run && json_jobs) {
-    conclusion = json_run.conclusion;
-
-    if (NEEDS) {
-      json_needs = JSON.parse(NEEDS);
-      let jobsArray = [];
-
-      Object.keys(json_needs).forEach(key => {
-        jobsArray.push(key);
-      });
-
-      json_jobs.jobs.forEach(job => {
-        if (jobsArray.includes(job.name)) {
-          jobs_urls += `<a href="${job.html_url}">${job.name} - ${job.conclusion}</a>\n`;
-        }
-
-        setConclusion(job.conclusion);
-      });
-    } else {
-      json_jobs.jobs.forEach(job => {
-        jobs_urls += `<a href="${job.html_url}">${job.name} - ${job.conclusion}</a>\n`;
-
-        setConclusion(job.conclusion);
-      });
-    }
-
-    msg_text = `Деплой на ветке <b><u>${GITHUB_REF_NAME}</u></b> завершен со статусом <a href="${json_run.html_url}">${conclusion}</a>, пользователем <a href="${json_run.actor.html_url}">${json_run.actor.login}</a>, попыток: ${json_run.run_attempt}\n\nПодзадачи:\n${jobs_urls}`;
+  if (TG_MSG) {
+    msg_text = TG_MSG;
   } else {
-    msg_text = `Ошибка при сборе данных, для <a href="https://github.com/${GITHUB_REPO}/actions/runs/${GITHUB_RUN_ID}">деплоя</a>`;
+    await prepareMsgText();
   }
 
   let fetch_body = {
@@ -77,6 +46,46 @@ let jobs_urls = '',
       body: `${JSON.stringify(fetch_body)}`
     })
     .catch((err) => console.log(err));
+
+  async function prepareMsgText() {
+    json_run = await getData(
+      `https://api.github.com/repos/${GITHUB_REPO}/actions/runs/${GITHUB_RUN_ID}`,
+      GITHUB_FETCH_OPTIONS);
+    json_jobs = await getData(
+      `https://api.github.com/repos/${GITHUB_REPO}/actions/runs/${GITHUB_RUN_ID}/jobs`,
+      GITHUB_FETCH_OPTIONS);
+
+    if (json_run && json_jobs) {
+      conclusion = json_run.conclusion;
+
+      if (NEEDS) {
+        json_needs = JSON.parse(NEEDS);
+        let jobsArray = [];
+
+        Object.keys(json_needs).forEach(key => {
+          jobsArray.push(key);
+        });
+
+        json_jobs.jobs.forEach(job => {
+          if (jobsArray.includes(job.name)) {
+            jobs_urls += `<a href="${job.html_url}">${job.name} - ${job.conclusion}</a>\n`;
+          }
+
+          setConclusion(job.conclusion);
+        });
+      } else {
+        json_jobs.jobs.forEach(job => {
+          jobs_urls += `<a href="${job.html_url}">${job.name} - ${job.conclusion}</a>\n`;
+
+          setConclusion(job.conclusion);
+        });
+      }
+
+      msg_text = `Деплой на ветке <b><u>${GITHUB_REF_NAME}</u></b> завершен со статусом <a href="${json_run.html_url}">${conclusion}</a>, пользователем <a href="${json_run.actor.html_url}">${json_run.actor.login}</a>, попыток: ${json_run.run_attempt}\n\nПодзадачи:\n${jobs_urls}`;
+    } else {
+      msg_text = `Ошибка при сборе данных, для <a href="https://github.com/${GITHUB_REPO}/actions/runs/${GITHUB_RUN_ID}">деплоя</a>`;
+    }
+  }
 })();
 
 function setConclusion(jobConclusion) {
