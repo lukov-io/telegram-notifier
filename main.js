@@ -53,9 +53,9 @@ let jobs_urls = '',
       });
     }
 
-    msg_text = `Деплой завершен со статусом <a href="${json_run.html_url}">${conclusion}</a>, пользователем <a href="${json_run.actor.html_url}">${json_run.actor.login}</a>, попыток: ${json_run.run_attempt}\n\nДеплой:\n${jobs_urls}`;
+    msg_text = `Деплой завершен со статусом <a href="${json_run.html_url}">${conclusion}</a>, пользователем <a href="${json_run.actor.html_url}">${json_run.actor.login}</a>, попыток: ${json_run.run_attempt}\n\nПодзадачи:\n${jobs_urls}`;
   } else {
-    msg_text = `Произошла ошибка при <a href="https://github.com/${GITHUB_REPO}/actions/runs/${GITHUB_RUN_ID}">деплое</a>`;
+    msg_text = `Ошибка при сборе данных, для <a href="https://github.com/${GITHUB_REPO}/actions/runs/${GITHUB_RUN_ID}">деплоя</a>`;
   }
 
   let fetch_body = {
