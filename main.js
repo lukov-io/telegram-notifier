@@ -53,9 +53,9 @@ let jobs_urls = '',
       });
     }
 
-    msg_text = `<a href="${json_run.actor.html_url}">${json_run.actor.login}</a>'s workflow completed with <a href="${json_run.html_url}">status ${conclusion}</a>, run attempt ${json_run.run_attempt}\n\njobs info:\n${jobs_urls}`;
+    msg_text = `Деплой завершен со статусом <a href="${json_run.html_url}">${conclusion}</a>, пользователем <a href="${json_run.actor.html_url}">${json_run.actor.login}</a>, попыток: ${json_run.run_attempt}\n\nДеплой:\n${jobs_urls}`;
   } else {
-    msg_text = `tg notifier error on https://github.com/${GITHUB_REPO}/actions/runs/${GITHUB_RUN_ID}`;
+    msg_text = `Произошла ошибка при <a href="https://github.com/${GITHUB_REPO}/actions/runs/${GITHUB_RUN_ID}">деплое</a>`;
   }
 
   let fetch_body = {
