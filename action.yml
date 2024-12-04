@@ -2,6 +2,9 @@ name: 'Telegram Message Notify'
 description: 'Sending a Telegram message'
 author: 'razz1k'
 inputs:
+  SHOULD_BE_SKIPPED:
+    description: 'SHOULD_BE_SKIPPED'
+    default: 'false'
   GITHUB_REPO:
     description: 'GITHUB_REPO'
   GITHUB_RUN_ID:

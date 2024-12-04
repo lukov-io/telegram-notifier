@@ -1,4 +1,5 @@
-const TG_BOT_TOKEN = process.env.INPUT_TG_BOT_TOKEN,
+const SHOULD_BE_SKIPPED = process.env.INPUT_SHOULD_BE_SKIPPED,
+  TG_BOT_TOKEN = process.env.INPUT_TG_BOT_TOKEN,
   TG_CHAT_ID = process.env.INPUT_TG_CHAT_ID,
   TG_TOPIC_ID = process.env.INPUT_TG_TOPIC_ID,
   TG_MSG = process.env.INPUT_TG_MSG,
@@ -22,6 +23,8 @@ let jobs_urls = '',
   conclusion;
 
 (async () => {
+  if (SHOULD_BE_SKIPPED === 'true') return true;
+
   if (TG_MSG) {
     msg_text = TG_MSG;
   } else {
