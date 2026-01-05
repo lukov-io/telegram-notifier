@@ -40,7 +40,7 @@ let jobs_urls = '',
     disable_notification: false
   };
 
-  if (TG_TOPIC_ID && TG_CHAT_ID.includes('_')) fetch_body.message_thread_id = TG_TOPIC_ID;
+  if (TG_TOPIC_ID && TG_CHAT_ID && TG_CHAT_ID.includes('_')) fetch_body.message_thread_id = TG_TOPIC_ID;
 
   await fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`,
     {
