@@ -36,7 +36,7 @@ let jobs_urls = '',
   let fetch_body = {
     chat_id: TG_CHAT_ID,
     text: msg_text,
-    parse_mode: `"${TG_PARSE_MODE}"`,
+    parse_mode: `${TG_PARSE_MODE}`,
     disable_notification: false
   };
 
@@ -52,6 +52,7 @@ let jobs_urls = '',
     })
     .then((resp) => {
       if (DEBUG) {
+        console.log(fetch_body)
         console.log(resp)
       }
     })
