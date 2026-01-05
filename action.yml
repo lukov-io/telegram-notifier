@@ -2,6 +2,9 @@ name: 'Telegram Message Notify'
 description: 'Sending a Telegram message'
 author: 'razz1k'
 inputs:
+  DEBUG:
+    description: "output fetch responce for api.telegram"
+    default: 'false'
   SHOULD_BE_SKIPPED:
     description: 'SHOULD_BE_SKIPPED'
     default: 'false'

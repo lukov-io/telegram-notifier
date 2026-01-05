@@ -1,4 +1,5 @@
 const SHOULD_BE_SKIPPED = process.env.INPUT_SHOULD_BE_SKIPPED,
+  DEBUG = process.env.DEBUG,
   TG_BOT_TOKEN = process.env.INPUT_TG_BOT_TOKEN,
   TG_CHAT_ID = process.env.INPUT_TG_CHAT_ID,
   TG_TOPIC_ID = process.env.INPUT_TG_TOPIC_ID,
@@ -49,7 +50,11 @@ let jobs_urls = '',
       },
       body: `${JSON.stringify(fetch_body)}`
     })
-    // .then((resp) => console.log(resp))
+    .then((resp) => {
+      if (DEBUG) {
+        console.log(resp)
+      }
+    })
     .catch((err) => console.log(err));
 
   async function prepareMsgText() {
