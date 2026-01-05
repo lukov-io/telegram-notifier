@@ -19,6 +19,9 @@ inputs:
     description: 'the topic of the chat ID that will receive the message'
   TG_MSG:
     description: 'the message that should be sent'
+  TG_PARSE_MODE:
+    default: 'html'
+    description: 'https://core.telegram.org/bots/api#formatting-options'
   GITHUB_RUNNER_TOKEN:
     description: >
       Personal access token (PAT) used to fetch the repository. The PAT is configured

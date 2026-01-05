@@ -3,6 +3,7 @@ const SHOULD_BE_SKIPPED = process.env.INPUT_SHOULD_BE_SKIPPED,
   TG_CHAT_ID = process.env.INPUT_TG_CHAT_ID,
   TG_TOPIC_ID = process.env.INPUT_TG_TOPIC_ID,
   TG_MSG = process.env.INPUT_TG_MSG,
+  TG_PARSE_MODE = process.env.TG_PARSE_MODE,
   GITHUB_RUNNER_TOKEN = process.env.INPUT_GITHUB_RUNNER_TOKEN,
   GITHUB_REPO = process.env.INPUT_GITHUB_REPO || process.env.GITHUB_REPOSITORY,
   GITHUB_RUN_ID = process.env.INPUT_GITHUB_RUN_ID || process.env.GITHUB_RUN_ID,
@@ -34,7 +35,7 @@ let jobs_urls = '',
   let fetch_body = {
     chat_id: TG_CHAT_ID,
     text: msg_text,
-    parse_mode: "html",
+    parse_mode: TG_PARSE_MODE,
     disable_notification: false
   };
 
@@ -48,6 +49,7 @@ let jobs_urls = '',
       },
       body: `${JSON.stringify(fetch_body)}`
     })
+    // .then((resp) => console.log(resp))
     .catch((err) => console.log(err));
 
   async function prepareMsgText() {
