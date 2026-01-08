@@ -92,7 +92,7 @@ let jobs_urls = '',
         });
       }
 
-      msg_text = `${json_run.name} \nДеплой на ветке <b><u>${GITHUB_REF_NAME}</u></b> завершен со статусом <a href="${json_run.html_url}">${conclusion}</a>, пользователем <a href="${json_run.actor.html_url}">${json_run.actor.login}</a>, попыток: ${json_run.run_attempt}\n\nПодзадачи:\n${jobs_urls}`;
+      msg_text = `${json_run.name} \nДеплой на ветке <b><u>${GITHUB_REF_NAME}</u></b> завершен со статусом <a href="${json_run.html_url}">${conclusion}</a>, пользователем <a href="${json_run.triggering_actor.html_url}">${json_run.triggering_actor.login}</a>, попытка: ${json_run.run_attempt}\n\nПодзадачи:\n${jobs_urls}`;
     } else {
       msg_text = `${json_run.name} \nОшибка <a href="https://github.com/${GITHUB_REPO}/actions/runs/${GITHUB_RUN_ID}">деплоя</a>`;
     }
