@@ -51,7 +51,7 @@ let jobs_urls = '',
       body: `${JSON.stringify(fetch_body)}`
     })
     .then((resp) => {
-      if (DEBUG) {
+      if (String(DEBUG).toLowerCase() === 'true') {
         console.log(fetch_body)
         console.log(resp)
       }
