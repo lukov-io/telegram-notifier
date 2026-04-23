@@ -50,10 +50,17 @@ let jobs_urls = '',
       },
       body: `${JSON.stringify(fetch_body)}`
     })
-    .then((resp) => {
-      if (String(DEBUG).toLowerCase() === 'true') {
-        console.log(fetch_body)
-        console.log(resp)
+    .then(async (resp) => {
+      if (isDebugEnabled()) {
+        const responseText = await resp.text();
+        console.log({
+          request: fetch_body,
+          status: resp.status,
+          statusText: resp.statusText,
+          ok: resp.ok,
+          headers: Object.fromEntries(resp.headers.entries()),
+          body: responseText || '<empty>'
+        });
       }
     })
     .catch((err) => console.log(err));
@@ -114,11 +121,32 @@ async function getData(url, opt) {
   try {
     const response = await fetch(url, opt);
     if (!response.ok) {
-      throw new Error(`Response status: ${response.status}`);
+      const responseText = await response.text();
+      const errorMessage = `Response status: ${response.status}`;
+
+      if (isDebugEnabled()) {
+        console.error({
+          message: errorMessage,
+          url,
+          status: response.status,
+          statusText: response.statusText,
+          headers: Object.fromEntries(response.headers.entries()),
+          body: responseText || '<empty>'
+        });
+      } else {
+        console.error(`${errorMessage}; body: ${responseText || '<empty>'}`);
+      }
+
+      return null;
     }
 
     return await response.json();
   } catch (error) {
     console.error(error.message);
+    return null;
   }
+}
+
+function isDebugEnabled() {
+  return String(DEBUG).toLowerCase() === 'true';
 }
