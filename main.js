@@ -37,14 +37,24 @@ let jobs_urls = '',
     msg_text = appendDebugInfo(msg_text);
   }
 
+  const telegramTarget = resolveTelegramTarget(TG_CHAT_ID, TG_TOPIC_ID);
+
   let fetch_body = {
-    chat_id: TG_CHAT_ID,
+    chat_id: telegramTarget.chatId,
     text: msg_text,
     parse_mode: `${TG_PARSE_MODE}`,
     disable_notification: false
   };
 
-  if (TG_TOPIC_ID && TG_CHAT_ID && TG_CHAT_ID.includes('_')) fetch_body.message_thread_id = TG_TOPIC_ID;
+  if (
+    telegramTarget.topicId
+    && (
+      (TG_CHAT_ID && TG_CHAT_ID.includes('_'))
+      || telegramTarget.hasLinkInput
+    )
+  ) {
+    fetch_body.message_thread_id = telegramTarget.topicId;
+  }
 
   await fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`,
     {
@@ -153,6 +163,63 @@ async function getData(url, opt) {
 
 function isDebugEnabled() {
   return String(DEBUG).toLowerCase() === 'true';
+}
+
+function resolveTelegramTarget(chatIdInput, topicIdInput) {
+  const chatLinkData = parseTelegramLink(chatIdInput);
+  const topicLinkData = parseTelegramLink(topicIdInput);
+  let resolvedChatId = chatIdInput;
+  let resolvedTopicId = topicIdInput;
+  let hasLinkInput = false;
+
+  if (chatLinkData) {
+    hasLinkInput = true;
+    resolvedChatId = chatLinkData.chatId;
+    if (!resolvedTopicId && chatLinkData.topicId) {
+      resolvedTopicId = chatLinkData.topicId;
+    }
+  }
+
+  if (topicLinkData) {
+    hasLinkInput = true;
+    resolvedTopicId = topicLinkData.topicId || '';
+
+    if (!resolvedChatId || chatLinkData) {
+      resolvedChatId = topicLinkData.chatId;
+    }
+  }
+
+  return {
+    chatId: resolvedChatId,
+    topicId: resolvedTopicId,
+    hasLinkInput
+  };
+}
+
+function parseTelegramLink(value) {
+  if (!value || typeof value !== 'string') return null;
+  const rawValue = value.trim();
+  if (!rawValue) return null;
+
+  const normalizedValue = rawValue.startsWith('http://') || rawValue.startsWith('https://')
+    ? rawValue
+    : `https://${rawValue}`;
+
+  try {
+    const parsedUrl = new URL(normalizedValue);
+    if (!['t.me', 'www.t.me', 'telegram.me'].includes(parsedUrl.hostname)) return null;
+
+    const pathSegments = parsedUrl.pathname.split('/').filter(Boolean);
+    if (pathSegments[0] !== 'c') return null;
+    if (!/^\d+$/.test(pathSegments[1])) return null;
+
+    const chatId = `-100${pathSegments[1]}`;
+    const topicId = pathSegments[2] && /^\d+$/.test(pathSegments[2]) ? pathSegments[2] : '';
+
+    return { chatId, topicId };
+  } catch {
+    return null;
+  }
 }
 
 function appendDebugInfo(baseText) {
