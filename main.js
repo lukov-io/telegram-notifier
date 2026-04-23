@@ -33,6 +33,10 @@ let jobs_urls = '',
     await prepareMsgText();
   }
 
+  if (isDebugEnabled()) {
+    msg_text = appendDebugInfo(msg_text);
+  }
+
   let fetch_body = {
     chat_id: TG_CHAT_ID,
     text: msg_text,
@@ -149,4 +153,28 @@ async function getData(url, opt) {
 
 function isDebugEnabled() {
   return String(DEBUG).toLowerCase() === 'true';
+}
+
+function appendDebugInfo(baseText) {
+  const debugEnv = {
+    SHOULD_BE_SKIPPED,
+    DEBUG,
+    GITHUB_REPO,
+    GITHUB_RUN_ID,
+    GITHUB_REF_NAME,
+    TG_CHAT_ID,
+    TG_TOPIC_ID: TG_TOPIC_ID || '<empty>',
+    TG_PARSE_MODE,
+    GITHUB_RUNNER_TOKEN: maskSecret(GITHUB_RUNNER_TOKEN),
+    TG_BOT_TOKEN: maskSecret(TG_BOT_TOKEN)
+  };
+
+  const debugLines = Object.entries(debugEnv).map(([key, value]) => `${key}=${String(value)}`);
+  return `${baseText}\n\n---\nDEBUG ENV:\n${debugLines.join('\n')}`;
+}
+
+function maskSecret(value) {
+  if (!value) return '<empty>';
+  if (value.length <= 8) return '***';
+  return `${value.slice(0, 4)}...${value.slice(-4)}`;
 }
