@@ -236,12 +236,21 @@ function appendDebugInfo(baseText) {
     TG_BOT_TOKEN: maskSecret(TG_BOT_TOKEN)
   };
 
-  const debugLines = Object.entries(debugEnv).map(([key, value]) => `${key}=${String(value)}`);
+  const debugLines = Object.entries(debugEnv).map(
+    ([key, value]) => `${key}=${escapeHtml(String(value))}`
+  );
   return `${baseText}\n\n---\nDEBUG ENV:\n${debugLines.join('\n')}`;
 }
 
 function maskSecret(value) {
-  if (!value) return '<empty>';
+  if (!value) return '[empty]';
   if (value.length <= 8) return '***';
   return `${value.slice(0, 4)}...${value.slice(-4)}`;
+}
+
+function escapeHtml(value) {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
 }
