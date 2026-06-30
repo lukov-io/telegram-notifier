@@ -22,6 +22,10 @@ inputs:
     description: 'the topic of the chat ID that will receive the message'
   TG_MSG:
     description: 'the message that should be sent'
+  TG_DOCUMENT:
+    description: 'path to a local file to send as a document'
+  TG_DOCUMENT_CAPTION:
+    description: 'caption for the document'
   TG_PARSE_MODE:
     default: 'html'
     description: 'https://core.telegram.org/bots/api#formatting-options'
@@ -42,6 +46,6 @@ inputs:
     description: 'include only jobs info from job.needs'
     default: ''
 runs:
-  using: node20
+  using: node24
   main: main.js
 
